@@ -1,20 +1,82 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import Navigation from './components/Navigation';
+import Tasktemp_form from './components/Tasktemp_form';
 import './App.css';
+import { task_temp } from './task_temp.json';
 class App extends Component {
+
+  constructor(){
+    super();
+    this.state={
+      task_temp
+    }
+    this.handleAddtoTask = this.handleAddtoTask.bind(this);
+  }
+  handleAddtoTask(task){
+    this.setState ({
+      task_temp: [...this.state.task_temp, task]
+    });
+  }
+  removeTask(index){
+    this.setState({
+      task_temp : this.state.task_temp.filter((e,i)=>{
+        return i !== index;
+      })
+    })
+  }
   render() {
+    const tasks =this.state.task_temp.map((task,i)=>{
+      return(
+        <div className="col-md-4 col-xs-8 mt-4">
+          
+          <div  className="card">
+            {task.priority == "hard" &&
+              <div className="card-header alert-danger">
+                <h3>{task.title}</h3>
+              </div>
+            }
+            {task.priority == "medium" &&
+              <div className="card-header alert-warning">
+                <h3>{task.title}</h3>
+              </div>
+            }
+            {task.priority == "low" &&
+              <div className="card-header alert-success">
+                <h3>{task.title}</h3>
+              </div>
+            }
+            <div className="card-body">
+              <p>{task.description}</p>
+              <p>
+                <mark>{task.responsible}</mark>
+              </p>
+            </div>
+            <div className="card-footer">
+              <button className="btn btn-danger" onClick={this.removeTask.bind(this,i)}> Delete</button>
+            </div>
+          </div>
+        </div>
+      )
+    });
+
     return(
       <div className="App">
-        <Navigation title="Component property"/>     
+        <Navigation title="Tasks" counter={this.state.task_temp.length}/>     
         <img src={logo} className="App-logo" alt="logo" />
+        <Tasktemp_form onAddtoTask={this.handleAddtoTask}/>
+        <div className="container">
+          <div className="row mt-4">
+            { tasks }
+          </div>
+        </div>  
       </div>
       )
     }
-}
+  }
 
 
-    // return (
+  // return (
     //   <div className="App">
     //     <header className="App-header">
     //     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -50,4 +112,4 @@ class App extends Component {
     //   </div>
     // );
 
-export default App;
+    export default App;
